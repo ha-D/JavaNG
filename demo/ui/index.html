@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/firebug-lite/build/firebug-lite.js"></script>
+    <script src="lib/angular-route/angular-route.min.js"></script>
+    <!--<script src="lib/firebug-lite-1.2/firebug-lite.js"></script>-->
+    <!--<script src="https://getfirebug.com/firebug-lite-beta.js"></script>-->
+    <script src="lib/ng-java/ng-java.js"></script>
+    <!--<script type='text/javascript' src='
+    '></script>-->
+    <!--<script src="http://getfirebug.com/firebug-lite.js#startOpened"></script>-->
+
+    <script>
+        var app = angular.module("demo", ["ngRoute", "ng-java"]);
+        app.config(function ($routeProvider) {
+            $routeProvider.when("/", {templateUrl: 'partial/page.html'});
+            $routeProvider.when("/2", {templateUrl: 'partial/page2.html'})
+        });
+        app.directive("abc", function() {
+            console.log("HERE");
+            return {
+                link: function(scope) {
+                    scope.hello = "HAA"
+                    console.log("HERE");
+                },
+                template: "{{ hello }}"
+            }
+        })
+    </script>
+
+</head>
+<body ng-app="demo">
+hellosss  ddd changed
+
+<input type="text" ng-model="data.text">
+<div>
+    {{ data.text }}
+</div>
+<div ng-java-controller="demo.controllers.MyController">
+    there
+</div>
+<a ng-href="#2">CLick thisCLICKCLICK</a>
+<div ng-view></div>
+
+</body>
+
+</html>

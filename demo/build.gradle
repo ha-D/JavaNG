@@ -1,0 +1,31 @@
+apply plugin: 'application'
+
+sourceCompatibility = 1.5
+version = '1.0'
+
+mainClassName = "demo.DemoApplication"
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir 'ui'
+        }
+    }
+}
+
+dependencies {
+    compile project(':javang')
+//    compile project(':ng-java')
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+task ngCopy(type: Copy) {
+    from(project(":ng-java").file("ng-java.js"))
+    into(file("ui/lib/ng-java"))
+}
+
+run.dependsOn ngCopy

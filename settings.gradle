@@ -1,0 +1,4 @@
+rootProject.name = 'JavaNG'
+
+include 'javang', 'ng-java', 'demo'
+
