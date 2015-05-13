@@ -4,10 +4,15 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -62,10 +67,14 @@ public class JavaNGWindow {
 
     private void initStage(Stage stage) {
         mStage = stage;
+        VBox vbox = new VBox();
         StackPane root = new StackPane();
+
+        vbox.getChildren().add(createMenu());
+        vbox.getChildren().add(root);
         WebView webView = createWebView();
         root.getChildren().add(webView);
-        stage.setScene(new Scene(root, mWidth, mHeight));
+        stage.setScene(new Scene(vbox, mWidth, mHeight));
         stage.show();
 
         mWebEngine = webView.getEngine();
@@ -87,6 +96,46 @@ public class JavaNGWindow {
                 }
             }
         });
+    }
+
+    private MenuBar createMenu() {
+        MenuBar menuBar = new MenuBar();
+        menuBar.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+
+        // --- Menu File
+        Menu menuProfile = new Menu("حساب کاربری");
+
+        // --- Menu Admin
+        Menu menuAdmin = new Menu("مدیریت");
+        Menu adminEmployees = new Menu("کارمندان");
+        adminEmployees.getItems().add(new MenuItem("فهرست کارمندان"));
+        adminEmployees.getItems().add(new MenuItem("ایجاد کارمند جدید"));
+        menuAdmin.getItems().add(adminEmployees);
+        Menu adminReport = new Menu("گزارشات");
+        adminReport.getItems().add(new MenuItem("گزارش تخلفات"));
+        adminReport.getItems().add(new MenuItem("گزارش رخداد‌های اخیر"));
+        adminReport.getItems().add(new MenuItem("گزارش فرآورده‌های دانشی"));
+        menuAdmin.getItems().add(adminReport);
+        menuAdmin.getItems().add(new MenuItem("تنظیمات شرکت"));
+
+        // --- Menu Knowledge
+        Menu menuKnowledge = new Menu("دانش‌");
+        menuKnowledge.getItems().add(new MenuItem("فهرست دانش ها"));
+        menuKnowledge.getItems().add(new MenuItem("ایجاد دانش جدید"));
+
+        // --- Menu QA
+        Menu menuQA = new Menu("سوال");
+        menuQA.getItems().add(new MenuItem("فهرست سوال ها"));
+        menuQA.getItems().add(new MenuItem("ایجاد سوال جدید"));
+
+        // --- Menu KDBM
+        Menu menuKDBM = new Menu("مدیریت پایگاه دانش");
+        menuKDBM.getItems().add(new MenuItem("پروژه‌ها"));
+        menuKDBM.getItems().add(new MenuItem("پیغام‌ها"));
+
+        menuBar.getMenus().addAll(menuProfile, menuAdmin, menuKnowledge, menuQA, menuKDBM);
+
+        return menuBar;
     }
 
     private WebView createWebView() {
