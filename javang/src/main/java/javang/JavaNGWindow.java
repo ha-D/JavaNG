@@ -116,7 +116,6 @@ public class JavaNGWindow {
         adminReport.getItems().add(new MenuItem("گزارش رخداد‌های اخیر"));
         adminReport.getItems().add(new MenuItem("گزارش فرآورده‌های دانشی"));
         menuAdmin.getItems().add(adminReport);
-        menuAdmin.getItems().add(new MenuItem("تنظیمات شرکت"));
 
         // --- Menu Knowledge
         Menu menuKnowledge = new Menu("دانش‌");
