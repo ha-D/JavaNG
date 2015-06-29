@@ -22,35 +22,37 @@
         } else {
             hookListeners.push(callback);
         }
+    };
+
+    window.changePage = function (page) {
+        window.location.hash = page;
     }
 })();
 
-console.log("ALERT");
+console.log("ALERT3");
 
 var app = angular.module("ng-java", []);
 
 app.directive("ngJavaController", function () {
-
     function link (localScope, el, attrs) {
         var functionWrappers = {
         };
-
         onHook(function () {
-            javangBridge.registerController(localScope.ngJavaController, localScope, functionWrappers);
-
+            //javangBridge.registerController(localScope.ngJavaController, localScope, functionWrappers);
+            javangBridge.registerController(attrs.ngJavaController, localScope, functionWrappers);
             for (key in functionWrappers) {
                 localScope[key] = function() {
                     return functionWrappers[key].invoke.apply(functionWrappers[key], arguments);
-                }
+                };
             }
         });
     }
 
     return {
-        link: link,
-        scope: {
-            ngJavaController: '@'
-        }
+        link: link
+        //scope: {
+        //    ngJavaController: '@'
+        //}
     };
 });
 

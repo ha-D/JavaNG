@@ -74,6 +74,7 @@ public class JavaNGWindow {
         vbox.getChildren().add(root);
         WebView webView = createWebView();
         root.getChildren().add(webView);
+//        webView.setPrefHeight(800);
         stage.setScene(new Scene(vbox, mWidth, mHeight));
         stage.show();
 
@@ -89,13 +90,18 @@ public class JavaNGWindow {
             public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
                 if (newValue.equals(Worker.State.SUCCEEDED)) {
 
-//                    initBridge();
+                    initBridge();
                     if (mStateListener != null) {
                         mStateListener.onReady(JavaNGWindow.this);
                     }
                 }
             }
         });
+
+//        String s =
+//                "تنظیمات مدیر"
+//                ;
+//        mStage.setTitle(s);
     }
 
     private MenuBar createMenu() {
