@@ -3,6 +3,7 @@ package javang;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
@@ -26,17 +27,22 @@ public class JavaNGWindow {
     private String mIndexURL;
     private Stage mStage;
     private WebEngine mWebEngine;
-
+    private JavaNGMenu mMenu;
     private JavaNGBridge mNgBridge;
 
     private StateListener mStateListener;
 
-    public JavaNGWindow(String indexURL, int width, int height, StateListener stateListener) {
+    public JavaNGWindow(String indexURL, int width, int height, JavaNGMenu menuBar, StateListener stateListener) {
         mWidth = width;
         mHeight = height;
         mIndexURL = indexURL;
         mStateListener = stateListener;
+        mMenu = menuBar;
         initialize();
+    }
+
+    public JavaNGWindow(String indexURL, int width, int height, StateListener stateListener) {
+        this(indexURL, width, height, null, stateListener);
     }
 
     public JavaNGWindow(String indexURL) {
@@ -70,7 +76,10 @@ public class JavaNGWindow {
         VBox vbox = new VBox();
         StackPane root = new StackPane();
 
-        vbox.getChildren().add(createMenu());
+        MenuBar menuBar = createMenu();
+        if (menuBar != null) {
+            vbox.getChildren().add(menuBar);
+        }
         vbox.getChildren().add(root);
         WebView webView = createWebView();
         root.getChildren().add(webView);
@@ -104,42 +113,37 @@ public class JavaNGWindow {
 //        mStage.setTitle(s);
     }
 
+    private MenuItem createMenuItem(JavaNGMenuItem item) {
+        if (item instanceof JavaNGMenu) {
+            Menu menuItem = new Menu(item.getText());
+            for (JavaNGMenuItem child : ((JavaNGMenu) item).getItems()) {
+                menuItem.getItems().add(createMenuItem(child));
+            }
+            return menuItem;
+        } else {
+            MenuItem menuItem = new MenuItem(item.getText());
+            menuItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    item.onClick(mWebEngine);
+                }
+            });
+            return menuItem;
+        }
+    }
+
     private MenuBar createMenu() {
+        if (mMenu == null) {
+            return null;
+        }
+
         MenuBar menuBar = new MenuBar();
         menuBar.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
-        // --- Menu File
-        Menu menuProfile = new Menu("حساب کاربری");
-
-        // --- Menu Admin
-        Menu menuAdmin = new Menu("مدیریت");
-        Menu adminEmployees = new Menu("کارمندان");
-        adminEmployees.getItems().add(new MenuItem("فهرست کارمندان"));
-        adminEmployees.getItems().add(new MenuItem("ایجاد کارمند جدید"));
-        menuAdmin.getItems().add(adminEmployees);
-        Menu adminReport = new Menu("گزارشات");
-        adminReport.getItems().add(new MenuItem("گزارش تخلفات"));
-        adminReport.getItems().add(new MenuItem("گزارش رخداد‌های اخیر"));
-        adminReport.getItems().add(new MenuItem("گزارش فرآورده‌های دانشی"));
-        menuAdmin.getItems().add(adminReport);
-        menuAdmin.getItems().add(new MenuItem("تنظیمات"));
-
-        // --- Menu Knowledge
-        Menu menuKnowledge = new Menu("دانش‌");
-        menuKnowledge.getItems().add(new MenuItem("فهرست دانش ها"));
-        menuKnowledge.getItems().add(new MenuItem("ایجاد دانش جدید"));
-
-        // --- Menu QA
-        Menu menuQA = new Menu("سوال");
-        menuQA.getItems().add(new MenuItem("فهرست سوال ها"));
-        menuQA.getItems().add(new MenuItem("ایجاد سوال جدید"));
-
-        // --- Menu KDBM
-        Menu menuKDBM = new Menu("مدیریت پایگاه دانش");
-        menuKDBM.getItems().add(new MenuItem("پروژه‌ها"));
-        menuKDBM.getItems().add(new MenuItem("پیغام‌ها"));
-
-        menuBar.getMenus().addAll(menuProfile, menuAdmin, menuKnowledge, menuQA, menuKDBM);
+        for (JavaNGMenuItem item : mMenu.getItems()) {
+            MenuItem menu = createMenuItem(item);
+            menuBar.getMenus().add((Menu)menu);
+        }
 
         return menuBar;
     }
